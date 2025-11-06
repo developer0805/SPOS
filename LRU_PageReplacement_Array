@@ -1,0 +1,85 @@
+import java.util.*;
+
+public class LRU_PageReplacement_Array {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of frames: ");
+        int frames = sc.nextInt();
+
+        System.out.print("Enter number of pages: ");
+        int n = sc.nextInt();
+
+        int[] pages = new int[n];
+        System.out.println("Enter page reference string:");
+        for (int i = 0; i < n; i++) {
+            pages[i] = sc.nextInt();
+        }
+
+        int[] frame = new int[frames];  // Fixed-size array for frames
+        Arrays.fill(frame, -1);         // Initialize with -1 (empty)
+        int pageFaults = 0;
+        int count = 0;                  // How many frames are currently filled
+
+        // LRU logic
+        for (int i = 0; i < n; i++) {
+            int page = pages[i];
+            boolean found = false;
+
+            // 1️⃣ Check if page is already present (page hit)
+            for (int f = 0; f < frames; f++) {
+                if (frame[f] == page) {
+                    found = true;
+                    break;
+                }
+            }
+
+            // 2️⃣ If page not found → page fault
+            if (!found) {
+                // If frame not full, add page directly
+                if (count < frames) {
+                    frame[count] = page;
+                    count++;
+                } else {
+                    // Find LRU page
+                    int lru = Integer.MAX_VALUE;
+                    int indexToRemove = -1;
+
+                    for (int f = 0; f < frames; f++) {
+                        int lastUsed = -1;
+
+                        // Look backward in reference string
+                        for (int j = i - 1; j >= 0; j--) {
+                            if (pages[j] == frame[f]) {
+                                lastUsed = j;
+                                break;
+                            }
+                        }
+
+                        if (lastUsed < lru) {
+                            lru = lastUsed;
+                            indexToRemove = f;
+                        }
+                    }
+
+                    // Replace LRU with current page
+                    frame[indexToRemove] = page;
+                }
+
+                pageFaults++;
+            }
+
+            // 3️⃣ Print frame content
+            System.out.print("Frames: ");
+            for (int f = 0; f < frames; f++) {
+                if (frame[f] != -1)
+                    System.out.print(frame[f] + " ");
+                else
+                    System.out.print("- ");
+            }
+            System.out.println();
+        }
+
+        System.out.println("\nTotal Page Faults = " + pageFaults);
+    }
+}
