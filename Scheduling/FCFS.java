@@ -68,6 +68,21 @@ public class FCFS{
         totaltat += tat[i];
         totalwt += wt[i];
      }
+        
+   System.out.println("\nGantt Chart:");
+        System.out.print("|");
+        for (int i = 0; i < n; i++) {
+            System.out.print(" P" + pid[i] + " |");
+        }
+        System.out.println();
+
+        System.out.print(at[0]);
+        for (int i = 0; i < n; i++) {
+            if (at[i] > ct[i - 1] && i != 0)
+                System.out.print("   " + at[i]);
+            System.out.print("   " + ct[i]);
+        }
+
     
 
     }
